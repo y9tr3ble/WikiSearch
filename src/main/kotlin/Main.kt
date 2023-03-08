@@ -4,32 +4,37 @@ import java.net.URLEncoder
 import javax.xml.parsers.DocumentBuilderFactory
 
 fun main() {
-    println("Choose a language to search for articles (en, ru, fr и т.д.):")
-    val language = readLine() ?: "en"
+    println("Choose a language to search for articles (en, ru, fr and others):")
+    val language = readlnOrNull() ?: "en"
     println("Enter your request for wikipedia:")
     val query = readlnOrNull() ?: ""
-    val encodedQuery = URLEncoder.encode(query, "UTF-8")
-    val searchUrl = "https://$language.wikipedia.org/w/api.php?action=query&list=search&srsearch=$encodedQuery&format=xml"
+
+    val searchUrl = "https://$language.wikipedia.org/w/api.php?action=query&list=search&srsearch=${URLEncoder.encode(query, "UTF-8")}&format=xml"
     val searchDoc = getXmlDocument(searchUrl)
+
     val searchElement = searchDoc.getElementsByTagName("search").item(0)
-    if (searchElement.hasChildNodes()) {
-        val pElement = searchElement.firstChild as org.w3c.dom.Element
-        val title = pElement.getAttribute("title")
-        val snippet = pElement.getAttribute("snippet")
-        val pageid = pElement.getAttribute("pageid")
-        val articleUrl = "https://$language.wikipedia.org/w/api.php?action=query&prop=extracts&pageids=$pageid&format=xml"
-        val articleDoc = getXmlDocument(articleUrl)
-        val extractElement = articleDoc.getElementsByTagName("extract").item(0)
-        val articleText = extractElement.textContent
-        val snippetWithoutTags = removeXmlTags(snippet)
-        val articleTextWithoutTags = removeXmlTags(articleText)
-        println("URL: https://$language.wikipedia.org/wiki/$title")
-        println("Heading: $title")
-        println("Snippet: $snippetWithoutTags")
-        println("Text of the article: $articleTextWithoutTags")
-    } else {
+    if (!searchElement.hasChildNodes()) {
         println("Nothing was found for your query.")
+        return
     }
+// dota 2
+    val pElement = searchElement.firstChild as org.w3c.dom.Element
+    val title = pElement.getAttribute("title")
+    val snippet = pElement.getAttribute("snippet")
+    val pageid = pElement.getAttribute("pageid")
+
+    val articleUrl = "https://$language.wikipedia.org/w/api.php?action=query&prop=extracts&pageids=$pageid&format=xml"
+    val articleDoc = getXmlDocument(articleUrl)
+    val extractElement = articleDoc.getElementsByTagName("extract").item(0)
+    val articleText = extractElement.textContent
+
+    val snippetWithoutTags = removeXmlTags(snippet)
+    val articleTextWithoutTags = removeXmlTags(articleText)
+
+    println("URL: https://$language.wikipedia.org/wiki/$title")
+    println("Heading: $title")
+    println("Snippet: $snippetWithoutTags")
+    println("Text of the article: $articleTextWithoutTags")
 }
 
 fun getXmlDocument(url: String): org.w3c.dom.Document {
