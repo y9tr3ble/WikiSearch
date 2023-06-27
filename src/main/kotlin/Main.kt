@@ -3,7 +3,6 @@ import java.net.URL
 import java.net.URLEncoder
 import org.w3c.dom.Document
 import javax.xml.parsers.DocumentBuilderFactory
-import java.io.InputStream
 
 fun main() {
     val language = promptLanguage()
@@ -29,12 +28,12 @@ fun main() {
 
 fun promptLanguage(): String {
     print("Choose a language to search for articles (en, ru, fr and others): ")
-    return readLine() ?: "en"
+    return readlnOrNull() ?: "en"
 }
 
 fun promptQuery(): String {
     print("Enter your request for wikipedia: ")
-    return readLine() ?: ""
+    return readlnOrNull() ?: ""
 }
 
 fun buildSearchUrl(language: String, query: String): String =
@@ -43,10 +42,10 @@ fun buildSearchUrl(language: String, query: String): String =
 fun buildArticleUrl(language: String, pageid: String): String =
     "https://$language.wikipedia.org/w/api.php?action=query&prop=extracts&pageids=$pageid&format=xml"
 
-fun extractFirstSearchResult(searchDoc: org.w3c.dom.Document): org.w3c.dom.Element =
+fun extractFirstSearchResult(searchDoc: Document): org.w3c.dom.Element =
     searchDoc.getElementsByTagName("p").item(0) as org.w3c.dom.Element
 
-fun extractArticleText(articleDoc: org.w3c.dom.Document): String =
+fun extractArticleText(articleDoc: Document): String =
     articleDoc.getElementsByTagName("extract").item(0).textContent
 
 fun displayResult(language: String, title: String, snippet: String, articleText: String) {
