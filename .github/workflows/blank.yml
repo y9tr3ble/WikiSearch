@@ -20,12 +20,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
-    - name: Set up JDK for Kotlin
-      uses: actions/setup-java@v2
-      with:
-        java-version: 'adopt@1.8'
-
+      
     - name: Build with Gradle
       run: ./gradlew build
 
