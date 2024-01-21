@@ -5,7 +5,7 @@ This is a simple console application for searching and displaying information fr
 ![image](https://user-images.githubusercontent.com/69369034/222977108-96bee0ec-c2b2-4ecc-a75d-ea51a4147cf5.png)
 
 # Features
-Search for articles on Wikipedia
+Search for articles on Wikipedia with Kotlin
 Select the language of Wikipedia (currently supported: English, Russian, German)
 Display the article title, snippet, and text (without XML tags)
 # Installation
